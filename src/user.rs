@@ -19,8 +19,8 @@ pub struct Contact {
 impl User {
     pub fn new(uid: Option<Uuid>, uname: Option<String>) -> Self {
         if uid.is_some() && uname.is_some() {
-            let name: String = uname.unwrap_or_default();
-            let id: Uuid = uid.unwrap_or_default();
+            let name: String = uname.unwrap_or_else(generate_username);
+            let id: Uuid = uid.unwrap_or_else(Uuid::new_v4);
 
             return User {
                 user_id: id,

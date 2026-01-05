@@ -1,11 +1,12 @@
+use std::io;
+
 use cce2e_rs::arg::GlobalArg;
 use clap::Parser;
 
-fn main() -> color_eyre::Result<()> {
+fn main() -> io::Result<()> {
     let _ = GlobalArg::parse();
 
-    color_eyre::install()?;
-    ratatui::run(cce2e_rs::app)?;
+    let _ = ratatui::run(|terminal| cce2e_rs::tui::AppState::default().run(terminal));
 
     Ok(())
 }
