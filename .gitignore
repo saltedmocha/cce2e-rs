@@ -7,13 +7,4 @@ target
 **/*.rs.bak
 *.pdb
 
-# IDE Stuff
-# RustRover
-# I don't use it so I'm excluding it all
-# /.idea
-
-# VSCode
-# Uncomment if there's specific settings for the ide
-# ^.vscode/extensions 
-# I don't use this either
-# /.vscode
+.DS_Store
