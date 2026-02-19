@@ -1,10 +1,24 @@
 use std::{
     io::{Read, Write},
-    net,
+    net, process,
 };
 
+pub fn start_listening() -> net::TcpListener {
+    let listener: net::TcpListener =
+        net::TcpListener::bind("localhost:7007").unwrap_or_else(|err| {
+            println!("Failed to start server: {}, exiting...", err);
+            process::exit(1);
+        });
+
+    if let Err(err) = listener.set_ttl(128) {
+        println!("Failed to set TTL: {}, using default...", err);
+    };
+
+    listener
+}
+
 pub fn handle_client(stream: &mut net::TcpStream) {
-    let mut buf: [u8; 1024] = [0; 1024];
+    let mut buf: [u8; 2048] = [0; 2048];
     let Ok(addr) = stream.peer_addr() else {
         println!("Failed to receive connection");
         stream
@@ -31,20 +45,9 @@ pub fn handle_client(stream: &mut net::TcpStream) {
             return;
         };
 
-        buf = [0; 1024];
+        buf = [0; 2048];
     }
 }
 
-fn main() {
-    let listener: net::TcpListener = cce2e_rs::start_listening();
-
-    for connection in listener.incoming() {
-        match connection {
-            Ok(mut stream_info) => handle_client(&mut stream_info),
-            Err(err) => {
-                println!("Failed to connect, {}", err);
-                return;
-            }
-        }
-    }
-}
+pub mod args;
+pub mod network;
