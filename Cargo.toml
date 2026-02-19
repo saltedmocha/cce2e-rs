@@ -1,0 +1,9 @@
+[workspace]
+resolver = "3"
+members = ["cc_client", "cc_server"]
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
