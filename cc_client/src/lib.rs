@@ -5,16 +5,17 @@ use std::{
 };
 
 pub fn get_name() -> String {
-    let mut buf = String::new();
-    let input = io::stdin();
+    let mut buf: String = String::new();
+    let input: io::Stdin = io::stdin();
 
     print!("Please enter your name: ");
+    let _ = io::stdout().flush();
     if let Err(err) = input.read_line(&mut buf) {
         println!("Failed to get name, {}", err);
         return get_name();
     };
 
-    buf
+    buf.trim_matches('\n').to_string()
 }
 
 pub fn connect_to_host(stream_info: &args::AppArgs) -> net::TcpStream {
@@ -35,12 +36,12 @@ fn buf_to_str(buf: &[u8]) -> Result<&str, str::Utf8Error> {
     }
 }
 
-fn read_input() -> Option<(usize, [u8; 2048])> {
-    print!("Send: ");
+fn read_input(name: &String) -> Option<(usize, [u8; 2048])> {
+    print!("{}: ", name);
     let _ = io::stdout().flush();
 
     let mut buf: [u8; 2048] = [0; 2048];
-    let mut input = io::stdin();
+    let mut input: io::Stdin = io::stdin();
 
     let Ok(input_size) = input.read(&mut buf) else {
         println!("Failed to read input");
@@ -50,7 +51,7 @@ fn read_input() -> Option<(usize, [u8; 2048])> {
     Some((input_size, buf))
 }
 
-pub fn handle_server(stream: &mut net::TcpStream) {
+pub fn handle_server(name: &String, stream: &mut net::TcpStream) {
     let mut buf: [u8; 2048] = [0; 2048];
     let Ok(addr) = stream.peer_addr() else {
         println!("Failed to receive connection");
@@ -59,7 +60,7 @@ pub fn handle_server(stream: &mut net::TcpStream) {
     };
 
     loop {
-        let Some((size, res)) = read_input() else {
+        let Some((size, res)) = read_input(name) else {
             continue;
         };
 
