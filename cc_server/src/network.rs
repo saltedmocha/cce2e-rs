@@ -33,9 +33,7 @@ impl StreamInfo {
         let mut buf: [u8; 2048] = [0; 2048];
         let Ok(addr) = self.connection.peer_addr() else {
             println!("Failed to receive connection");
-            self.connection
-                .shutdown(net::Shutdown::Both)
-                .expect("Failed to close connection");
+            let _ = self.connection.shutdown(net::Shutdown::Both);
             return;
         };
 

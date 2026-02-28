@@ -21,9 +21,7 @@ pub fn handle_client(stream: &mut net::TcpStream) {
     let mut buf: [u8; 2048] = [0; 2048];
     let Ok(addr) = stream.peer_addr() else {
         println!("Failed to receive connection");
-        stream
-            .shutdown(net::Shutdown::Both)
-            .expect("Failed to close connection");
+        let _ = stream.shutdown(net::Shutdown::Both);
         return;
     };
 
